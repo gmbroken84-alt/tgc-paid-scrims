@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TGC PAID SCRIMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: Arial;
+      text-align: center;
+      margin: 0;
+    }
+
+    h1 {
+      color: red;
+      padding: 15px;
+      background: #111;
+    }
+
+    .card {
+      background: #111;
+      border: 1px solid red;
+      margin: 15px;
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    button {
+      background: red;
+      color: white;
+      border: none;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+
+    .wallet {
+      background: #222;
+      padding: 10px;
+    }
+
+    img {
+      margin-top: 10px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🔥 TGC PAID SCRIMS</h1>
+
+<div class="wallet">
+  💰 Wallet Balance: ₹<span id="wallet">100</span>
+</div>
+
+<!-- LONE WOLF -->
+<div class="card">
+  <h2>Lone Wolf ₹20</h2>
+  <p>Win ₹35</p>
+  <button onclick="join(20)">Join</button>
+</div>
+
+<div class="card">
+  <h2>Lone Wolf ₹40</h2>
+  <p>Win ₹75</p>
+  <button onclick="join(40)">Join</button>
+</div>
+
+<!-- PER KILL -->
+<div class="card">
+  <h2>BR Per Kill ₹10</h2>
+  <p>₹9 per kill</p>
+  <button onclick="join(10)">Join</button>
+</div>
+
+<div class="card">
+  <h2>BR Per Kill ₹20</h2>
+  <p>₹19 per kill</p>
+  <button onclick="join(20)">Join</button>
+</div>
+
+<!-- SCRIMS -->
+<div class="card">
+  <h2>BR Scrims ₹50</h2>
+  <p>Top 1 ₹240</p>
+  <button onclick="join(50)">Join</button>
+</div>
+
+<div class="card">
+  <h2>BR Scrims ₹75</h2>
+  <p>Top 1 ₹300</p>
+  <button onclick="join(75)">Join</button>
+</div>
+
+<!-- PAYMENT -->
+<div class="card">
+  <h2>Add Money 💰</h2>
+  <p>Scan QR & Pay</p>
+  <img src="qr.png" width="200">
+  <br>
+  <button onclick="addMoney()">I Paid</button>
+</div>
+
+<script>
+let wallet = 100;
+
+function updateWallet(){
+  document.getElementById("wallet").innerText = wallet;
+}
+
+function join(amount){
+  if(wallet >= amount){
+    wallet -= amount;
+    updateWallet();
+    alert("Joined Match 🔥");
+  } else {
+    alert("Not enough balance ❌");
+  }
+}
+
+function addMoney(){
+  let amount = prompt("Enter amount added:");
+  if(amount){
+    wallet += parseInt(amount);
+    updateWallet();
+    alert("Money Added 💰");
+  }
+}
+</script>
+
+</body>
+</html>
