@@ -3,132 +3,183 @@
 <head>
   <title>TGC PAID SCRIMS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
   <style>
-    body {
-      background: black;
-      color: white;
-      font-family: Arial;
-      text-align: center;
-      margin: 0;
-    }
-
-    h1 {
-      color: red;
-      padding: 15px;
-      background: #111;
-    }
-
+    body {background:black;color:white;font-family:Arial;text-align:center;}
+    h1 {color:red;}
     .card {
-      background: #111;
-      border: 1px solid red;
-      margin: 15px;
-      padding: 15px;
-      border-radius: 10px;
+      border:1px solid red;
+      margin:10px;
+      padding:10px;
+      border-radius:10px;
+      background:#111;
     }
-
     button {
-      background: red;
-      color: white;
-      border: none;
-      padding: 10px;
-      margin-top: 10px;
-      border-radius: 5px;
+      background:red;
+      color:white;
+      padding:8px;
+      border:none;
+      margin-top:5px;
     }
-
-    .wallet {
-      background: #222;
-      padding: 10px;
-    }
-
-    img {
-      margin-top: 10px;
-      border-radius: 10px;
-    }
+    input {padding:8px;margin:5px;}
   </style>
 </head>
 
 <body>
 
 <h1>🔥 TGC PAID SCRIMS</h1>
-
-<div class="wallet">
-  💰 Wallet Balance: ₹<span id="wallet">100</span>
-</div>
-
-<!-- LONE WOLF -->
-<div class="card">
-  <h2>Lone Wolf ₹20</h2>
-  <p>Win ₹35</p>
-  <button onclick="join(20)">Join</button>
-</div>
-
-<div class="card">
-  <h2>Lone Wolf ₹40</h2>
-  <p>Win ₹75</p>
-  <button onclick="join(40)">Join</button>
-</div>
-
-<!-- PER KILL -->
-<div class="card">
-  <h2>BR Per Kill ₹10</h2>
-  <p>₹9 per kill</p>
-  <button onclick="join(10)">Join</button>
-</div>
-
-<div class="card">
-  <h2>BR Per Kill ₹20</h2>
-  <p>₹19 per kill</p>
-  <button onclick="join(20)">Join</button>
-</div>
-
-<!-- SCRIMS -->
-<div class="card">
-  <h2>BR Scrims ₹50</h2>
-  <p>Top 1 ₹240</p>
-  <button onclick="join(50)">Join</button>
-</div>
-
-<div class="card">
-  <h2>BR Scrims ₹75</h2>
-  <p>Top 1 ₹300</p>
-  <button onclick="join(75)">Join</button>
-</div>
-
-<!-- PAYMENT -->
-<div class="card">
-  <h2>Add Money 💰</h2>
-  <p>Scan QR & Pay</p>
-  <img src="qr.png" width="200">
-  <br>
-  <button onclick="addMoney()">I Paid</button>
-</div>
+<div id="app"></div>
 
 <script>
-let wallet = 100;
 
-function updateWallet(){
-  document.getElementById("wallet").innerText = wallet;
+// ===== LOGIN =====
+function loginPage(){
+  app.innerHTML = `
+    <h2>Login</h2>
+    <input id="u" placeholder="Username"><br>
+    <input id="p" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+    <p>Admin: admin / 123</p>
+  `;
 }
 
-function join(amount){
-  if(wallet >= amount){
-    wallet -= amount;
-    updateWallet();
-    alert("Joined Match 🔥");
+function login(){
+  if(u.value=="admin" && p.value=="123"){
+    localStorage.setItem("role","admin");
+    adminPanel();
   } else {
-    alert("Not enough balance ❌");
+    localStorage.setItem("user",u.value);
+    if(!localStorage.getItem("wallet")) localStorage.setItem("wallet",100);
+    home();
   }
 }
 
+// ===== HOME =====
+function home(){
+  app.innerHTML = `
+    <h2>Wallet: ₹${localStorage.getItem("wallet")}</h2>
+
+    <button onclick="br()">Battle Royal</button>
+    <button onclick="lone()">Lone Wolf</button>
+    <button onclick="addMoney()">Add Money</button>
+    <button onclick="logout()">Logout</button>
+  `;
+}
+
+// ===== BR SCRIMS =====
+function br(){
+  app.innerHTML = `
+    <h2>🔥 BR SCRIMS</h2>
+
+    <div class="card">
+      ₹25 SCRIMS<br>
+      Slots: ${getSlots(25)}/48<br>
+      <button onclick="join(25,48)">Join</button>
+    </div>
+
+    <div class="card">
+      ₹50 SCRIMS<br>
+      Slots: ${getSlots(50)}/48<br>
+      <button onclick="join(50,48)">Join</button>
+    </div>
+
+    <button onclick="home()">Back</button>
+  `;
+}
+
+// ===== LONE WOLF =====
+function lone(){
+  app.innerHTML = `
+    <h2>🔥 LONE WOLF</h2>
+
+    <div class="card">
+      ₹20 → Win ₹35<br>
+      Slots: ${getSlots(20)}/2<br>
+      <button onclick="join(20,2)">Join</button>
+    </div>
+
+    <div class="card">
+      ₹40 → Win ₹75<br>
+      Slots: ${getSlots(40)}/2<br>
+      <button onclick="join(40,2)">Join</button>
+    </div>
+
+    <button onclick="home()">Back</button>
+  `;
+}
+
+// ===== JOIN SYSTEM =====
+function getSlots(e){
+  return parseInt(localStorage.getItem("slot_"+e) || 0);
+}
+
+function join(entry,max){
+  let wallet = parseInt(localStorage.getItem("wallet"));
+  let slots = getSlots(entry);
+
+  if(wallet < entry){
+    alert("No balance ❌");
+    return;
+  }
+
+  if(slots >= max){
+    alert("Match Full ❌");
+    return;
+  }
+
+  wallet -= entry;
+  slots++;
+
+  localStorage.setItem("wallet",wallet);
+  localStorage.setItem("slot_"+entry,slots);
+
+  alert("Joined ✅");
+  home();
+}
+
+// ===== ADD MONEY =====
 function addMoney(){
-  let amount = prompt("Enter amount added:");
-  if(amount){
-    wallet += parseInt(amount);
-    updateWallet();
-    alert("Money Added 💰");
+  let amt = prompt("Enter amount");
+  if(amt){
+    let w = parseInt(localStorage.getItem("wallet"));
+    localStorage.setItem("wallet", w + parseInt(amt));
+    home();
   }
 }
+
+// ===== ADMIN =====
+function adminPanel(){
+  app.innerHTML = `
+    <h2>👑 ADMIN</h2>
+
+    <input id="entry" placeholder="Entry"><br>
+    <input id="room" placeholder="Room ID"><br>
+
+    <button onclick="release()">Release Room</button>
+    <button onclick="reset()">Reset All</button>
+    <button onclick="logout()">Logout</button>
+  `;
+}
+
+function release(){
+  localStorage.setItem("room_"+entry.value, room.value);
+  alert("Room Released 🔥");
+}
+
+function reset(){
+  localStorage.clear();
+  alert("Reset Done");
+  loginPage();
+}
+
+// ===== LOGOUT =====
+function logout(){
+  localStorage.clear();
+  loginPage();
+}
+
+// START
+loginPage();
+
 </script>
 
 </body>
